@@ -58,17 +58,17 @@ public class Arduino : MonoBehaviour
     {
         if (playerOne != null)
         {
-            float xPos = Remap(int.Parse(values[0]), 0, 1023, 0, 10);         // scale the input. this could be done on the Arduino as well.
+            float zPos = Remap(int.Parse(values[0]), -275, 1023, 100, 40);         // scale the input. this could be done on the Arduino as well.
 
-            Vector3 newPosition = new Vector3(xPos, playerOne.transform.position.y, playerOne.transform.position.z);
+            Vector3 newPosition = new Vector3(playerOne.transform.position.x, playerOne.transform.position.y, zPos);
 
             playerOne.transform.position = newPosition;        // apply the new position
         }
         if (playerTwo != null)
         {
-            float xPos = Remap(int.Parse(values[1]), 0, 1023, 0, 10);         // scale the input. this could be done on the Arduino as well.
+            float zPos = Remap(int.Parse(values[1]), -275, 1023, 100, 40);         // scale the input. this could be done on the Arduino as well.
 
-            Vector3 newPosition = new Vector3(xPos, playerTwo.transform.position.y, playerTwo.transform.position.z);
+            Vector3 newPosition = new Vector3(playerTwo.transform.position.x, playerTwo.transform.position.y, zPos);
             // create a new Vector for the position, playerTwo.transform.position.z);
 
             playerTwo.transform.position = newPosition;        // apply the new position
