@@ -9,8 +9,9 @@ public class Arduino : MonoBehaviour
 
     public GameObject playerOne;
     public GameObject playerTwo;
-    public bool controllerActive = false;
+    public bool controllerActive = true;
     public int commPort = 0;
+    public int speed = 20;
 
     private SerialPort serial = null;
     private bool connected = false;
@@ -19,6 +20,7 @@ public class Arduino : MonoBehaviour
     void Start()
     {
         ConnectToSerial();
+        setPlayers();
     }
 
     void ConnectToSerial()
@@ -29,7 +31,6 @@ public class Arduino : MonoBehaviour
         serial = new SerialPort("\\\\.\\COM" + commPort, 9600);
         serial.ReadTimeout = 50;
         serial.Open();
-
     }
 
     // Update is called once per frame
@@ -58,20 +59,25 @@ public class Arduino : MonoBehaviour
     {
         if (playerOne != null)
         {
-            float zPos = Remap(int.Parse(values[0]), -275, 1023, 100, 40);         // scale the input. this could be done on the Arduino as well.
+            float yPos = Remap(int.Parse(values[0]), 0, 1023, 0, speed);         // scale the input. this could be done on the Arduino as well.
+            if ((yPos > GameManager.bottomLeft.y + 2.5f / 2) || (yPos < GameManager.topRight.x - 2.5f / 2))
+            {
+                Vector2 newPosition = new Vector2(playerOne.transform.position.x, yPos);
 
-            Vector3 newPosition = new Vector3(playerOne.transform.position.x, playerOne.transform.position.y, zPos);
-
-            playerOne.transform.position = newPosition;        // apply the new position
+                playerOne.transform.position = newPosition;
+            } // apply the new position
         }
         if (playerTwo != null)
         {
-            float zPos = Remap(int.Parse(values[1]), -275, 1023, 100, 40);         // scale the input. this could be done on the Arduino as well.
+            float yPos = Remap(int.Parse(values[1]), 0, 1023, 0, speed);         // scale the input. this could be done on the Arduino as well.
+            if ((yPos > GameManager.bottomLeft.y + 2.5f / 2) || (yPos < GameManager.topRight.x - 2.5f / 2))
+            {
 
-            Vector3 newPosition = new Vector3(playerTwo.transform.position.x, playerTwo.transform.position.y, zPos);
-            // create a new Vector for the position, playerTwo.transform.position.z);
+                Vector2 newPosition = new Vector2(playerTwo.transform.position.x, yPos);
+                // create a new Vector for the position, playerTwo.transform.position.z);
 
-            playerTwo.transform.position = newPosition;        // apply the new position
+                playerTwo.transform.position = newPosition;        // apply the new position
+            }
         }
     }
 
@@ -105,5 +111,11 @@ public class Arduino : MonoBehaviour
     float Remap(float value, float from1, float to1, float from2, float to2)
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
+
+    public void setPlayers()
+    {
+        playerOne = GameObject.Find("PaddleRight");
+        playerTwo = GameObject.Find("PaddleLeft");
     }
 }
